@@ -54,29 +54,26 @@ class quiz_app(ctk.CTk):
 
     def check_answer(self, selected_option):
         correct = self.questions_list[self.current_index]["answer"]
+        self.current_index += 1
         if selected_option == correct:
             self.show_result("✅ Correct!")
         else:
             self.show_result("❌ Incorrect!")
 
     def next_question(self):
-    
-        self.current_index += 1
-        if self.current_index < len(self.questions_list):
-            self.show_question()
-        elif self.current_index == len(self.questions_list):
             self.clear_frames()
-            done_label = ctk.CTkLabel(self.quiz_frame, text="Quiz Finished!", font=("Helvetica", 16))
-            done_label.pack(pady=20)
-            back_btn = ctk.CTkButton(self.quiz_frame, text="Back to Menu", command=self.show_menu)
-            back_btn.pack(pady=10)
-            self.quiz_frame.pack_forget()
+            self.show_question()
 
     def show_result(self, message):
         result_label = ctk.CTkLabel(self.quiz_frame, text=message, font=("Helvetica", 16))
         result_label.pack(pady=10)
-        next_btn = ctk.CTkButton(self.quiz_frame, text="Next Question", command=self.next_question)
-        next_btn.pack(pady=10)
+
+        if self.current_index < len(self.questions_list):
+            next_btn = ctk.CTkButton(self.quiz_frame, text="Next Question", command=self.next_question)
+            next_btn.pack(pady=10)
+        elif self.current_index == len(self.questions_list):
+            done_btn = ctk.CTkButton(self.quiz_frame, text="Finish Quiz", command=self.show_menu)
+            done_btn.pack(pady=10)
 
     def clear_frames(self):
         for frame in (self.menu_frame, self.quiz_frame):
