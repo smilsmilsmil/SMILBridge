@@ -19,6 +19,7 @@ class quiz_app(ctk.CTk):
         self.initial_menu()
 
     def initial_menu(self):
+        print("Opening Initial Menu")
         self.clear_frames()
         self.menu_frame.pack(fill="both", expand=True)
 
@@ -29,6 +30,7 @@ class quiz_app(ctk.CTk):
         start_btn.pack(pady=10)
 
     def show_menu(self):
+        print("Opening Show Menu")
         self.clear_frames()
         self.menu_frame.pack(fill="both", expand=True)
 
@@ -41,6 +43,7 @@ class quiz_app(ctk.CTk):
         bestscore_btn.pack(pady=20)
 
     def show_best_score(self):
+        print("Opening Bestscore Menu")
         # Bestscore menu
         self.clear_frames()
         self.frame.pack(fill="both", expand=True)
@@ -77,7 +80,11 @@ class quiz_app(ctk.CTk):
             json.dump(data, f, indent=4, ensure_ascii=False)
         print(f"Best scores have been reset.")
 
+        self.clear_frames()
+        self.show_best_score()
+
     def start_quiz(self):
+        print("Starting Quiz...")
         # Load and shuffle quiz
         with open("questions.json", "r") as file:
             self.questions_list = json.load(file)["quiz_questions"]
@@ -88,7 +95,7 @@ class quiz_app(ctk.CTk):
         self.show_question()
 
     def show_question(self):
-        
+        print(f"Showing Question {self.current_index + 1}..")
         self.clear_frames()
         self.quiz_frame.pack(fill="both", expand=True)
 
@@ -102,13 +109,16 @@ class quiz_app(ctk.CTk):
         
 
     def check_answer(self, selected_option):
+        print(f"Checking answer for question {self.current_index + 1}...")
         correct = self.questions_list[self.current_index]["answer"]
         self.current_index += 1
         if selected_option == correct:
             self.show_result("✅ Correct!")
             self.current_score += 1
+            print(f"Checking score successful... Current score : {self.current_score}")
         else:
             self.show_result("❌ Incorrect!")
+            print(f"Checking score successful... Current score : {self.current_score}")
 
     def next_question(self):
             self.clear_frames()
@@ -124,6 +134,8 @@ class quiz_app(ctk.CTk):
         elif self.current_index == len(self.questions_list):
             done_btn = ctk.CTkButton(self.quiz_frame, text="Finish Quiz", command=self.score_check)
             done_btn.pack(pady=10)
+            print("All questions answered, showing score check...")
+            print(f"Out of {len(self.questions_list)}, {self.current_score} correct...")
 
     def score_check(self):
         self.clear_frames()
@@ -149,8 +161,6 @@ class quiz_app(ctk.CTk):
             record = ctk.CTkButton(self.frame, text="Save", command=lambda: (self.record_score(), self.clear_frames(), self.show_menu()))
             record.pack(pady=10)
 
-
-
         else:
             no_label = ctk.CTkLabel(
                 self.frame,
@@ -160,6 +170,7 @@ class quiz_app(ctk.CTk):
             no_label.pack(pady=10)
 
     def record_score(self):
+        Updated = False
         with open("questions.json", "r") as f:
             data = json.load(f)
             bestscores = data.get("bestscores", [
@@ -175,6 +186,12 @@ class quiz_app(ctk.CTk):
 
         with open("questions.json", "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
+            Updated = True
+
+        if Updated == True:
+            print(f"Score Recorded")
+
+
 
     def clear_frames(self):
         for frame in (self.menu_frame, self.quiz_frame, self.frame):
